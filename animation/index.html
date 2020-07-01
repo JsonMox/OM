@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>OM</title>
+	<link rel="stylesheet" type="text/css" href="fonts/feather/style.css">
+	<link rel="stylesheet" type="text/css" href="css/index.css" />
+	<link rel="stylesheet" type="text/css" href="css/component.css" />
+	<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
+
+	<!-- for options -->
+	<link rel="stylesheet" type="text/css" href="css/normalize.css" />
+	<link rel="stylesheet" type="text/css" href="css/cs-select.css" />
+	<link rel="stylesheet" type="text/css" href="css/cs-skin-border.css" />
+	<link rel="stylesheet" type="text/css" href="css/app.css" />
+
+	<!-- for timerange -->
+	<link rel="stylesheet" type="text/css" href="css/bootstrap-datetimepicker.min.css" />
+
+	<script src="js/modernizr.custom.js"></script>
+	<script src="js/jquery-3.4.1.min.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+</head>
+
+<body>
+	<div class="container" id="slider">
+		<div style="text-align:center;clear:both;">
+		</div>
+		<section class="slider">
+			<div v-for="items in slider">
+				<div :class="items.class_name" :data-content="items.data_content">
+					<div class="slide__mover">
+						<div class="zoomer flex-center">
+							<img class="zoomer__image" :src="items.img_src" :alt="items.img_alt" />
+							<div class="preview">
+								<img :src="items.svg_src" :alt="items.svg_alt" />
+								<div :class="items.zoomer_class"></div>
+							</div>
+						</div>
+					</div>
+					<h2 class="slide__title"><span>{{items.title_1}}</span>{{items.title_2}}</h2>
+				</div>
+			</div>
+			<nav class="slider__nav">
+				<button class="button button--nav-prev"><i class="icon icon--arrow-left"></i><span
+						class="text-hidden">Previous viewport</span></button>
+				<button class="button button--zoom"><i class="icon icon--zoom"></i><span class="text-hidden">View
+						details</span></button>
+				<button class="button button--nav-next"><i class="icon icon--arrow-right"></i><span
+						class="text-hidden">Next viewport</span></button>
+			</nav>
+		</section>
+
+		<section class="content">
+			<div class="content__item" id="content-1">
+				<div class="content__item-inner">
+					<div id="menu-list">
+						<ul class="nav nav-pills pills-tab" role="tablist">
+							<li class="nav-item">
+								<a class="nav-link active" data-toggle="pill" href="#AA">All/Alert</a>
+							</li>
+							<li class="nav-item" :id="items.id" v-for="items in titles">
+								<a class="nav-link" data-toggle="pill" :href="items.href">{{items.name}}</a>
+							</li>
+						</ul>
+					</div>
+					<div class="col-md-10" id="data">
+						<div class="tab-content">
+							<!-- for  all/alert -->
+							<div id="AA" class="tab-pane active"><br>
+								<div class="cirle">
+									<h4>ALL/ALERT</h4><br>
+									<div v-for="items in checkbox">
+										<input type="radio" :id="items.id" :name="items.name" :value="items.val">
+										<label :for="items.name">{{items.val}}</label><br>
+									</div>
+									<div class="illustrate" style="margin-top: -31px;">
+										<span v-for="items in illustrate">
+											<p>{{items.text}}</p>
+										</span>
+									</div>
+								</div>
+							</div>
+							<!-- for remote -->
+							<div id="REMOTE" class="tab-pane fade"><br>
+								<div class="cirle">
+									<h4>REMOTE</h4><br>
+									<div class="left-block">
+										<input type="checkbox" id="remote" name="remote" value="REMOTE"
+											onclick="showRemote()">
+										<label for="remote">REMOTE</label>
+										<hr>
+										<div id="option-remote" style="visibility: hidden;">
+											<section>
+												<select id="remote-select" class="cs-select cs-skin-border" size="6">
+													<option value="" disabled selected>choose the from</option>
+													<option v-for="it in couponList" :value="it.id">{{it.name}}</option>
+												</select>
+											</section>
+										</div>
+									</div>
+									<div class="illustrate">
+										<span v-for="items in illustrate">
+											<p>{{items.text}}</p>
+										</span>
+									</div>
+								</div>
+							</div>
+							<!-- for select -->
+							<div id="SELECT" class="tab-pane fade"><br>
+								<div class="cirle">
+									<h4>SELECT</h4><br>
+									<div class="left-block">
+										<div class="show-config" type="text">
+											<ul id="show-config"></ul>
+										</div>
+										<hr>
+										<div class="show-configuration">
+											<input type="text" id="forconfiguration">
+										</div>
+										<hr>
+										<div for="option-configuration">
+											<section onclick="getSelectVal()">
+												<select id="configuration" class="cs-select cs-skin-border">
+													<option value="" disabled selected>choose the configuration</option>
+													<option v-for="it in options" :value="it.id">{{it.val}}</option>
+												</select>
+											</section>
+										</div>
+										<hr>
+										<button class="btn btn-primary" id="btn-add" onclick="addConfig()">add</button>
+										<button class="btn btn-primary" id="btn-clc" onclick="clcConfig()">clear
+											all</button>
+									</div>
+									<div class="illustrate">
+										<span v-for="items in illustrate">
+											<p>{{items.text}}</p>
+										</span>
+									</div>
+								</div>
+							</div>
+							<!-- for from -->
+							<div id="FROM" class="tab-pane fade"><br>
+								<div class="cirle">
+									<h4>FROM</h4><br>
+									<div class="left-block">
+										<div class="show-from" type="text">
+											<ul id="show-from"></ul>
+										</div>
+										<hr>
+										<div class="">
+											<input type="text" id="forfrom">
+										</div>
+										<hr>
+										<div for="option-from">
+											<section onclick="getFromVal()">
+												<select id="from" class="" style="width: 280px; height: 35px;">
+													<option value="" disabled selected>choose the dp elements</option>
+													<!-- <option v-for="it in options" :value="it.id">{{it.val}}</option> -->
+													<option value="one">1</option>
+													<option value="twitter">2</option>
+													<option value="linkedin">3</option>
+												</select>
+											</section>
+										</div>
+										<hr>
+										<button class="btn btn-primary" id="btn-add" onclick="addFrom()">add</button>
+										<button class="btn btn-primary" id="btn-clc" onclick="clcFrom()">clear
+											all</button>
+									</div>
+									<div class="illustrate">
+										<span v-for="items in illustrate">
+											<p>{{items.text}}</p>
+										</span>
+									</div>
+								</div>
+							</div>
+							<!-- for where -->
+							<div id="WHERE" class="tab-pane fade"><br>
+								<div class="cirle">
+									<h4>WHRER</h4><br>
+									<div class="left-block">
+										<hr>
+										<div>
+											<input type="text" id="forwhere">
+										</div>
+										<br>
+										<div id="option-where-keywords">
+											<label for="where-keywords">Keywords for WinCC OA:</label><br>
+											<section>
+												<select id="where-keywords" class="cs-select cs-skin-border">
+													<option value="" disabled selected>compare value with element from Select</option>
+													<option v-for="it in keywords" :value="it.val">{{it.id}}</option>
+												</select>
+											</section>
+										</div>
+										<br>
+										<div id="option-where-compare-way">
+											<label for="where-compare-way" style="margin-top: 20px;">Comparison way:</label><br>
+											<section>
+												<select id="where-compare-way" class="cs-select cs-skin-border">
+													<option value="" disabled selected>choose the the way of comparison
+													</option>
+													<option value="==">==</option>
+													<option value=">=">>=</option>
+													<option value="<=">
+														<=</option> </select> </section> </div> <br>
+															<div id="option-where-compare-val">
+																<label for="where-compare-val">Comparison
+																	value:</label><br>
+																<input type="text" id="comparions">
+															</div>
+															<br>
+															<button class="btn btn-primary" id="btn-add"
+																onclick="addWhere()">add</button>
+															<button class="btn btn-primary" id="btn-clc"
+																onclick="clcWhere()">clear
+																all</button>
+										</div>
+										<div class="illustrate">
+											<span v-for="items in illustrate">
+												<p>{{items.text}}</p>
+											</span>
+										</div>
+									</div>
+								</div>
+
+								<div id="TIMERANGE" class="tab-pane fade"><br>
+									<div class="cirle">
+										<h4>TIMERANGE</h4><br>
+										<div class="left-block">
+											<input type="checkbox" id="timerange" name="timerange" value="TIMERANGE"
+												onclick="showTR()">
+											<label for="timerange">TIMERANGE</label>
+											<hr>
+											<div id="option-timerange" style="visibility: hidden;">
+												<div class="form-group">
+													<label>START:</label><br>
+													<div class="input-append date strat_datetime">
+														<input id="time_s" size="17" type="text" value="">
+														<span class="add-on"><i class="icon-remove"></i></span>
+														<span class="add-on"><i class="icon-calendar"></i></span>
+													</div><br>
+													<label>END:</label><br>
+													<div class="input-append date strat_datetime">
+														<input id="time_e" size="17" type="text" value="">
+														<span class="add-on"><i class="icon-remove"></i></span>
+														<span class="add-on"><i class="icon-calendar"></i></span>
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="illustrate">
+											<span v-for="items in illustrate">
+												<p>{{items.text}}</p>
+											</span>
+										</div>
+									</div>
+								</div>
+								<div id="SORT" class="tab-pane fade"><br>
+									<div class="cirle">
+										<h4>SORT/GROUP</h4><br>
+										<div class="left-block">
+											<h4>sort</h4>
+											<div v-for="items in obj">
+												<div :id="items.block_id">
+													<div v-for="det in items.block_content" onclick="getFL()">
+														<input :type="det.type" :id="det.id" :name="det.name"
+															:value="det.val">
+														<label :for="det.id">{{det.val}}</label><br>
+													</div>
+												</div>
+											</div>
+											<hr>
+											<div id="option-dp" style="visibility: hidden;">
+												<section>
+													<select id="sort" class="cs-select cs-skin-border">
+														<option value="" disabled selected>choose the dpElement</option>
+														<option v-for="it in options" :value="it.id">{{it.val}}</option>
+													</select>
+												</section>
+											</div>
+											<br>
+											<input type="checkbox" id="group" name="group" value="GROUP"
+												onclick="showGroup()">
+											<label for="group">GROUP [s]</label>
+											<div id="option-sort" style="visibility: hidden;">
+												<input id="groupTime" type="number" placeholder="u must add a data">
+											</div><br>
+											<h4>First/Last results</h4>
+											<div id="sort-block-3">
+												<input type="radio" id="fir" name="fir-las" value="FIRST">
+												<label for="fir">FIRST</label><br>
+												<input type="radio" id="las" name="fir-las" value="LAST">
+												<label for="sort">LAST</label><br>
+											</div>
+											<div id="sort-block-4">
+												<input type="number" id="num" name="num" value="NUM" min="0"
+													placeholder="0" style="width: 33%;">
+											</div>
+										</div>
+										<div class="illustrate">
+											<span v-for="items in illustrate">
+												<p>{{items.text}}</p>
+											</span>
+										</div>
+									</div>
+								</div>
+								<div id="DATA" class="tab-pane fade"><br>
+									<div class="cirle">
+										<h4>DATA</h4><br>
+										<div class="block" id="tableDis">
+											THIS IS BLCOK FOT DATA DISPLAY
+										</div><br>
+										<div id="data-block-1" style="float: left; font-size: 12px;">
+											Number of linmes: <span id="lineNum"> 0 </span><br>
+											Query time[s]: <span id="queryTime"> 0.000 </span><br>
+											Total time[s]: <span id="totalTime"> 0.000 </span><br>
+										</div>
+										<div id="data-block-2" style="float: right; width: 17%;">
+											<button class="btn btn-primary" id="btn-clc"
+												onclick="clearInfo()">clear</button>
+											<button class="btn btn-primary" id="btn-start">start</button>
+										</div>
+										<hr>
+										<input id="sql" type="text" placeholder="sql"
+											style="width: 100%; margin-top: 10px;">
+										<hr>
+										<div id="btn-group-query" style="float: right;">
+											<button class="btn btn-primary" id="btn-export" onclick="method5('dataTable')">export
+												data</button>
+											<button class="btn btn-primary" id="btn-create" onclick="createSQL()">create
+												query</button>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="content__item" id="content-2">
+						<div class="content__item-inner">
+							<h2>For Choose</h2>
+
+						</div>
+					</div>
+					<div class="content__item" id="content-3">
+						<img class="content__item-img rounded-right" src="images/macbook-content.jpg"
+							alt="MacBook Content" />
+						<div class="content__item-inner">
+							<h2>The MacBook</h2>
+
+						</div>
+					</div>
+					<div class="content__item" id="content-4">
+						<img class="content__item-img rounded-right" src="images/imac-content.jpg" alt="iMac Content" />
+						<div class="content__item-inner">
+							<h2>The iMac</h2>
+
+						</div>
+					</div>
+					<button class="button button--close"><i class="icon icon--circle-cross"></i><span
+							class="text-hidden">Close
+							content</span></button>
+		</section>
+
+		<div style="text-align:center;clear:both;"></div>
+	</div>
+
+	<script src="js/bootstrap.min.js"></script>
+	<script src="js/bootstrap-datetimepicker.min.js"></script>
+	<script src="js/vue.js"></script>
+	<script src="js/vue.min.js"></script>
+	<script src="js/classie.js"></script>
+	<script src="js/dynamics.min.js"></script>
+	<script src="js/index.js"></script>
+	<script src="js/main.js"></script>
+
+	<!-- for options -->
+	<script src="js/classic.js"></script>
+	<script src="js/selectFx.js"></script>
+
+	<script>
+		document.onselectstart = function () {
+			return false;
+		}; //取消字段选择功能
+		/* (function () {
+			[].slice.call(document.querySelectorAll('select.cs-select')).forEach(function (el) {
+				new SelectFx(el);
+			});
+		})(); */
+	</script>
+</body>
+
+</html>
